@@ -45,6 +45,36 @@ var saveTasks = function() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 };
 
+// Revert back when it goes out of focus so the 
+// user knows they're done editing
+$(".list-group").on("blur", "textarea", function() {
+  // get the text area's current value/text
+  var text = $(this)
+  .val()
+  .trim()
+// get the parent ul's id attribute
+  var status = $(this)
+    .closest(".list-group")
+    .attr("id")
+    .replace("list-", "");
+// get the task's position in the list of other li elements
+  var index = $(this)
+    .closest(".list-group-item")
+    .index();
+});
+
+$(".list-group").on("click", "p", function() {
+  var text = $(this)
+  .text()
+  .trim();
+  var textInput = $("<textarea>").addClass("form-control")
+  $(this).replaceWith(textInput)
+  // Make the edit function not delete the entire task 
+  textInput.trigger("focus")
+  .val(text);
+  console.log(text);
+});
+
 
 
 
@@ -79,8 +109,14 @@ $("#task-form-modal .btn-primary").click(function() {
     });
 
     saveTasks();
+   
   }
 });
+
+
+
+
+
 
 // remove all tasks
 $("#remove-tasks").on("click", function() {
