@@ -61,12 +61,26 @@ $(".list-group").on("blur", "textarea", function () {
 });
 
 $(".list-group").on("click", "p", function () {
-  var text = $(this).text().trim();
-  var textInput = $("<textarea>").addClass("form-control");
-  $(this).replaceWith(textInput);
-  // Make the edit function not delete the entire task
-  textInput.trigger("focus").val(text);
-  console.log(text);
+  // get current text
+  var date = $(this).text().trim();
+  // create new input
+  var dateInput = $("<input>")
+    .attr("type", "text")
+    .addClass("form-control")
+    .val(date);
+
+  $(this).replaceWith(dateInput);
+  // enable jQuery ui datepicker
+  dateInput.datepicker({
+    minDate: 1,
+    onClose: function() {
+      // when calendar is closed, force a change event on the 'dateInput'
+      $(this).trigger("change");
+    }
+  });
+
+  // automatcally bring up the calendar
+  dateInput.trigger("focus");
 });
 
 // due date was clicked
@@ -75,7 +89,7 @@ $(".list-group").on("click", "span", function () {
   var date = $(this).text().trim();
 
   // value of due date was changed
-  $(".list-group").on("blur", "input[type='text']", function () {
+  $(".list-group").on("change", "input[type='text']", function () {
     // get current text
     var date = $(this).val().trim();
 
@@ -161,17 +175,21 @@ $(".card .list-group").sortable({
 $("#trash").droppable({
   accept: ".card .list-group-item",
   tolerance: "touch",
-  drop: function(event, ui) {
+  drop: function (event, ui) {
     ui.draggable.remove();
     console.log("drop");
   },
-  over: function(event, ui) {
+  over: function (event, ui) {
     console.log("over");
   },
-  out: function(event, ui) {
+  out: function (event, ui) {
     console.log("out");
+  },
+});
 
-  }
+//  date picker addition
+$("#modalDueDate").datepicker({
+  minDate: 1,
 });
 
 // modal was triggered
